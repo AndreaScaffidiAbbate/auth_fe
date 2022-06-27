@@ -21,17 +21,20 @@ export class LoginComponent {
 
   async submit() {
     if (this.form.valid) {
-      await this.authService.login().then(user => {
-        if(user.username === this.form.get('username')?.value && user.password === this.form.get('password')?.value) {
-          sessionStorage.setItem('token', 'uidhsdkjfsifdhusiujnoisfhzdkhviuashjziufaiu');
-          sessionStorage.setItem('role', user.token.role);
-          this.route.navigateByUrl('home');
-        }
-        else
-          alert('utente non trovato');
-      })
+      let userModel: UserModel = {
+        username: this.form.get('username')?.value,
+        password: this.form.get('password')?.value
+      }
+
+      await this.authService.login(userModel).then(user => {
+        user.user?.getIdToken().then( token => {
+          sessionStorage.setItem('token', token);
+        });
+        this.route.navigateByUrl('/home').then();
+      }).catch(reason => {
+        console.log(reason);
+      });
     }
   }
-  @Input() error: string | null | undefined;
 
 }

@@ -1,16 +1,26 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {UserModel} from "../models/user.model";
-import {lastValueFrom} from "rxjs";
+import {AngularFireAuth} from "@angular/fire/compat/auth";
+import {Observable} from "rxjs";
+import firebase from "firebase/compat";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
+  userData: Observable<firebase.User | null>;
 
-  async login(): Promise<UserModel> {
-   return await lastValueFrom(this.http.get<UserModel>('http://localhost:3000/users/1'));
+  constructor(private angularFireAuth: AngularFireAuth) {
+    this.userData = angularFireAuth.authState;
+  }
+
+  login(user: UserModel) {
+    return  this.angularFireAuth.signInWithEmailAndPassword(user.username, user.password);
+  }
+
+  signup(user: UserModel) {
+    return this.angularFireAuth.createUserWithEmailAndPassword(user.username, user.password);
   }
 }

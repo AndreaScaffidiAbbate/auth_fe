@@ -6,14 +6,22 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import jwtDecode from "jwt-decode";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class HttpTokenInterceptor implements HttpInterceptor {
 
-  constructor() {}
+  constructor(private router: Router) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const TOKEN = sessionStorage.getItem('token') ?? '';
-    return next.handle(request.clone( { setHeaders: { TOKEN } }));
+    const decodedToken = jwtDecode(TOKEN) as any;
+
+    if (TOKEN && decodedToken['exp'] > Date.now() / 1000) {
+      return next.handle(request.clone({setHeaders: {TOKEN}}));
+    }
+
+    return next.handle(request)
   }
 }

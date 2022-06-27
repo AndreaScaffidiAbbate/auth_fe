@@ -1,8 +1,8 @@
 export interface UserModel {
-  id: number,
+  id?: number,
   username: string,
   password: string,
-  token: {
+  token?: {
     role: string
   }
 }
