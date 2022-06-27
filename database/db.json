@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "pippo",
+      "password": "forte",
+      "token": {
+        "role": "admin"
+      }
+    }
+  ],
+  "books": [
+    {
+      "id": 1,
+      "title": "The Lord of The Rings",
+      "author": "Tolkien"
+    }
+  ]
+}
